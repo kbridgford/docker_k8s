@@ -1,3 +1,6 @@
+#secrets are stored in YAML because this is a demo. DON'T do this in production.
+#see https://kubernetes.io/docs/tasks/inject-data-application/distribute-credentials-secure/
+
 apiVersion: v1
 kind: Service
 metadata:
