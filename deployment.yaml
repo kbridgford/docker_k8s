@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+spec:
+  selector:
+    app: app
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+        - name: app
+          image: kwkaze/getting-started
+          env:
+            - name: MYSQL_DB
+              value: todos
+            - name: MYSQL_HOST
+              value: localhost
+            - name: MYSQL_PASSWORD
+              value: secret
+            - name: MYSQL_USER
+              value: root
+          resources: {}
+          ports:
+            - containerPort: 3000
+        - name: mysql
+          image: mysql:5.7
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: todo-mysql-data
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: secret
+            - name: MYSQL_DATABASE
+              value: todos
+          ports:
+            - containerPort: 3306
+      volumes:
+        - name: todo-mysql-data
+          emptyDir: {}
